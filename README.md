@@ -1,3 +1,47 @@
+This Fork 
+=========
+
+This fork is the lovechild of a late night cut and paste union of 
+Kyle Slattery's SFTP module and the credential handling portion of the S3 module.
+
+It allows, nay, forces you to put your SFTP credentials in a file instead of including
+them in the actual model (which really sucks if your project is up on Github). 
+All this is merged with the current version of Paperclip to ensure that Rails 3 goodness abounds.
+
+create your credentials file somewhere like config/sftp.yml:
+
+development:
+  sftp_host: somesite.com
+  sftp_user: someuser
+  sftp_password: somepassword
+production:
+  sftp_host: somesite.com
+  sftp_user: someuser
+  sftp_password: somepassword
+test:
+  sftp_host: somesite.com
+  sftp_user: someuser
+  sftp_password: somepassword
+
+Make sure you have the following gems in your Gemfile:
+gem 'net-ssh'
+gem 'net-sftp'
+
+Additionally you will need to make sure the user identifed in the 
+credentials has SSH access to the site you are pointing to. Just SFTP access won't cut it. 
+There are a few calls that use SSH in there with the SFTP stuff.
+
+And in your model, add the has_attached_file call.
+Notice there is an :sftp_credentials parameter pointing to config/sftp.yml, which is where I stored my credentials. The rest is standard Paperclip stuff:
+
+ has_attached_file :poster, :storage => :sftp, :path => 'somesite.com/somefolder/:class/:style/:basename.:extension', :url => 'http://somesite.com/somefolder/:class/:style/:basename.:extension', :sftp_credentials => Rails.root.join("config", "sftp.yml").to_s, :styles => { :medium => { :geometry => "596x596>"}, :thumb => { :geometry => "150x150>" }}
+
+
+
+Thanks to Kyle for being awesome:
+https://github.com/kyleslattery/paperclip
+http://kyleslattery.com
+
 Paperclip
 =========
 
